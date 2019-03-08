@@ -28,6 +28,8 @@ public interface Listener extends Runnable, AutoCloseable {
                 return new TcpAsync(parsedUrl.getAddr(), resolver, executor);
             case "udp":
                 return new UdpSync(parsedUrl.getAddr(), resolver, executor);
+            case "xmpp":
+                return new XmppListener(parsedUrl, resolver, executor);
         }
         throw new IllegalArgumentException("invalid listener format");
     }

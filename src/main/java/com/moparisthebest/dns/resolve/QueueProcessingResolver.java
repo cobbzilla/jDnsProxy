@@ -35,6 +35,8 @@ public interface QueueProcessingResolver extends Resolver, Runnable, AutoCloseab
             case "http":
             case "https":
                 return new HttpResolver(maxRetries, name, parsedUrl.getUrlWithoutFragment(), connectTimeout, parsedUrl.getProxy(), parsedUrl.getSslSocketFactory());
+            case "xmpp":
+                return new XmppResolver(maxRetries, name, parsedUrl);
         }
         throw new IllegalArgumentException("invalid listener format");
     }
