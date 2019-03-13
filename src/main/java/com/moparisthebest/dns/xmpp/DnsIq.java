@@ -13,7 +13,7 @@ public class DnsIq extends IQ {
 	private static final Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
 
 	public static final String ELEMENT = "dns";
-	public static final String NAMESPACE = "https://moparisthebest.com/dns";
+	public static final String NAMESPACE = "urn:xmpp:dox:0";
 
 	private final ByteBuffer bb;
 

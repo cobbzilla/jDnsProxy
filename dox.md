@@ -1,6 +1,8 @@
 XEP-XXXX DNS Queries over XMPP (DoX)
 ------------------------------------
 
+Submitted [XEP](https://xmpp.org/extensions/inbox/dox.html)
+
 ```
 # put your jid+pass details in jdns.xmpp.resolver.properties
 $ java -jar jDnsProxy.jar jdns.xmpp.resolver.properties &
@@ -13,14 +15,14 @@ wire format of protocol (this is the request+response from the query above, A re
 request:
 ```xml
 <iq to='dns@example.org/listener' id='27tZp-7' type='get'>
-  <dns xmlns='https://moparisthebest.com/dns'>vOIBIAABAAAAAAABB2V4YW1wbGUDb3JnAAABAAEAACkQAAAAAAAADAAKAAj5HO5JuEe+mA</dns>
+  <dns xmlns='urn:xmpp:dox:0'>vOIBIAABAAAAAAABB2V4YW1wbGUDb3JnAAABAAEAACkQAAAAAAAADAAKAAj5HO5JuEe+mA</dns>
 </iq>
 ```
 
 response:
 ```xml
 <iq to='dns@example.org/resolver' id='27tZp-7' type='result'>
-  <dns xmlns='https://moparisthebest.com/dns'>vOKBoAABAAEAAAABB2V4YW1wbGUDb3JnAAABAAHADAABAAEAAAhjAARduNgiAAApEAAAAAAAAAA</dns>
+  <dns xmlns='urn:xmpp:dox:0'>vOKBoAABAAEAAAABB2V4YW1wbGUDb3JnAAABAAHADAABAAEAAAhjAARduNgiAAApEAAAAAAAAAA</dns>
 </iq>
 ```
 
