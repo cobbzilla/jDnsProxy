@@ -42,6 +42,20 @@ public class TcpAsync implements Listener {
                     bc.buf.flip();
                     //debugPacket(new Packet(bc.buf).getBuf());
 
+                    try {
+                        final byte[] interception = intercept(bc.buf.array(), local);
+                        if (interception != null) {
+                            final Packet responsePacket = new Packet(interception);
+                            System.out.println("sending intercepted response");
+                            writeResponse(bc, responsePacket);
+                            System.out.println("*** SENT intercepted response");
+                            return;
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error processing interception: "+e);
+                        e.printStackTrace();
+                    }
+
                     resolver.resolveAsync(new Packet(bc.buf), executor).whenCompleteAsync((response, t) -> {
                         //System.out.println("got completed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         if(t != null) {
@@ -50,19 +64,7 @@ public class TcpAsync implements Listener {
                         }
                         //debugPacket(bc.getResponse().getBuf());
 
-                        bc.tcpHead.clear();
-                        bc.tcpHead.putShort((short) response.getBuf().capacity());
-                        bc.tcpHead.rewind();
-                        bc.buf = bc.tcpHead;
-
-                        bc.write((FullWriteCompletionHandler) (bc2) -> {
-                            //System.out.println("header write complete");
-                            bc2.buf = response.getBuf();
-                            bc2.buf.rewind();
-                            bc2.write((FullWriteCompletionHandler) (unused) -> {
-                                //System.out.println("body write complete");
-                            });
-                        });
+                        writeResponse(bc, response);
                     }, executor);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -78,6 +80,24 @@ public class TcpAsync implements Listener {
             // read the actual packet
             bc.read(dnsRequestRead);
         };
+    }
+
+    protected byte[] intercept(byte[] buf, Object requestor) { return null; }
+
+    private void writeResponse(BufChan bc, Packet response) {
+        bc.tcpHead.clear();
+        bc.tcpHead.putShort((short) response.getBuf().capacity());
+        bc.tcpHead.rewind();
+        bc.buf = bc.tcpHead;
+
+        bc.write((FullWriteCompletionHandler) (bc2) -> {
+            //System.out.println("header write complete");
+            bc2.buf = response.getBuf();
+            bc2.buf.rewind();
+            bc2.write((FullWriteCompletionHandler) (unused) -> {
+                //System.out.println("body write complete");
+            });
+        });
     }
 
     @Override
